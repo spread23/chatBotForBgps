@@ -107,7 +107,7 @@ export default function ChatPage({chatId}) {
 }
 
 export const getServerSideProps = async(ctx) =>{
-  const chatId = ctx.params?.chatId?.[0] || null;
+  const chatId = ctx.params?.chatid?.[0] || null;
   return {
     props: {
       chatId,

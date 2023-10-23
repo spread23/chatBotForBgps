@@ -7,7 +7,6 @@ export const ChatSidebar = ({chatId}) => {
     const [chatList, setChatList] = useState([]);
 
     useEffect(() => {
-        console.log('CHATID ',chatId);
         const loadChatList = async () => {
             const response = await fetch(`/api/chat/getChatList`, {
                 method: 'POST',
