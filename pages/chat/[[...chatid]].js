@@ -6,7 +6,7 @@ import {v4 as uuid} from 'uuid';
 import {Message} from '../../components/message/Message';
 import { useRouter } from "next/router";
 
-export default function ChatPage() {
+export default function ChatPage({chatId}) {
   const [newChatId, setNewChatId] = useState(null);
   const [messageText, setMessageText] = useState('');
   const [incommingMessage, setIncommingMessage] = useState('');
@@ -70,7 +70,7 @@ export default function ChatPage() {
         <title>New chat</title>
       </Head>
       <div className="grid h-screen grid-cols-[260px_1fr]">
-        <ChatSidebar />
+        <ChatSidebar chatId={chatId} />
         <div className="bg-gray-700 flex flex-col overflow-hidden">
           <div className="flex-1 overflow-scroll text-white">
             {newChatMessages.map(messages => {
@@ -104,4 +104,13 @@ export default function ChatPage() {
       </div>
     </>
   );
+}
+
+export const getServerSideProps = async(ctx) =>{
+  const chatId = ctx.params?.chatId?.[0] || null;
+  return {
+    props: {
+      chatId,
+    }
+  }
 }
