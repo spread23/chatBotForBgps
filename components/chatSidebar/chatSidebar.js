@@ -1,3 +1,5 @@
+import { faMessage, faPlus, faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
@@ -17,16 +19,16 @@ export const ChatSidebar = () => {
     }, []);
     return (
     <div className='bg-gray-900 flex flex-col overflow-hidden text-white'>
-        <Link className='btn' href='/chat'>Nuevo chat +</Link>
+        <Link className='side-menu-item bg-emerald-500 hover:bg-emerald-600' href='/chat'><FontAwesomeIcon icon={faPlus} />Nuevo chat</Link>
         <div className='flex-1 overflow-auto bg-gray-950'>
             {chatList.map((chat) => {
                 return (
-                <Link key={chat._id} href={`/chat/${chat._id}`}>
-                    {chat.title}
+                <Link className='side-menu-item' key={chat._id} href={`/chat/${chat._id}`}>
+                    <FontAwesomeIcon icon={faMessage} />{chat.title}
                 </Link>
             )})}
         </div>
-        <Link className='btn' href='/api/auth/logout'>Cerrar sesion</Link>
+        <Link className='side-menu-item' href='/api/auth/logout'><FontAwesomeIcon icon={faRightFromBracket} />Cerrar sesion</Link>
     </div>
     )
 };
