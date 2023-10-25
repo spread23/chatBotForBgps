@@ -7,27 +7,49 @@ export const config = {
 export default async function handler(req) {
     
     try {
-        const {message} = await req.json();
+        const {chatId:chatIdFromParam, message} = await req.json();
+        let chatId = chatIdFromParam;
+
         const initialChatMessage = {
             role: 'system',
             content: 'Your name is chatForBgps. An incredibly intelligent and quick-thinking AI orientado a recursos humanos, that always reply with an enthusiastic positive energy. You were created by CubaYColombiaOTT. Your response must be formatted as markdown',
+        };
+        let newChatId;
+        if(chatId){
+            //create a conversation chat
+            const response = await fetch(`${req.headers.get('origin')}/api/chat/addMessageToChat`, {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json',
+                    cookie: req.headers.get('cookie'),
+                },
+                body: JSON.stringify({
+                    chatId,
+                    role: 'user',
+                    content: message,
+
+                }),
+            });
+        }else{
+
+            const response = await fetch(`${req.headers.get('origin')}/api/chat/createNewChat`, {
+                method: 'POST',
+                headers: {
+                  'content-type': 'application/json',
+                   cookie: req.headers.get('cookie'),
+                },
+          
+                body: JSON.stringify({
+                  message,
+                }),
+              });
+          
+              const json = await response.json();
+              chatId = json._id;
+              newChatId = json._id;
+              console.log('NEW CHAT ', json);
         }
 
-        const response = await fetch(`${req.headers.get('origin')}/api/chat/createNewChat`, {
-            method: 'POST',
-            headers: {
-              'content-type': 'application/json',
-               cookie: req.headers.get('cookie'),
-            },
-      
-            body: JSON.stringify({
-              message,
-            }),
-          });
-      
-          const json = await response.json();
-          const chatId = json._id;
-          console.log('NEW CHAT ', json);
 
         const stream = await OpenAIEdgeStream('https://api.openai.com/v1/chat/completions', {
             headers: {
@@ -43,7 +65,10 @@ export default async function handler(req) {
             
         },
         {   onBeforeStream: ({emit}) => {
-            emit(chatId, 'newChatId');
+            if(newChatId){
+
+                emit(chatId, 'newChatId');
+            }
         },
             onAfterStream: async ({emit, fullContent}) => {
                 await fetch(`${req.headers.get('origin')}/api/chat/addMessageToChat`, {
