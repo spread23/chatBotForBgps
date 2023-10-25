@@ -25,7 +25,7 @@ export const ChatSidebar = ({chatId}) => {
             {chatList.map((chat) => {
                 return (
                 <Link className={`side-menu-item ${chatId == chat._id ? 'bg-gray-700 hover:bg-gray-700' : ''}`} key={chat._id} href={`/chat/${chat._id}`}>
-                    <FontAwesomeIcon icon={faMessage} />{chat.title}
+                    <FontAwesomeIcon icon={faMessage} /><span title={chat.title} className='overflow-hidden text-ellipsis whitespace-nowrap'>{chat.title}</span>
                 </Link>
             )})}
         </div>
